@@ -63,12 +63,6 @@ Ext.define('GeoExt.data.store.WfsFeatures', {
     outputFormat: 'application/json',
 
     /**
-     * The 'sortBy' param value used in the WFS request.
-     * @cfg {String}
-     */
-    sortBy: null,
-
-    /**
      * The 'startIndex' param value used in the WFS request.
      * @cfg {String}
      */
@@ -191,7 +185,7 @@ Ext.define('GeoExt.data.store.WfsFeatures', {
      *
      * @private
      * @param  {Object} wfsResponse The XMLHttpRequest object
-     * @return {Number}            Total amount of features
+     * @return {Integer}            Total amount of features
      */
     getTotalFeatureCount: function(wfsResponse) {
         var totalCount = -1;
@@ -216,6 +210,33 @@ Ext.define('GeoExt.data.store.WfsFeatures', {
         }
 
         return totalCount;
+    },
+
+    /**
+     * Sends the sortBy parameter to the WFS Server
+     * If multiple sorters are specified then multiple fields are
+     * sent to the server.
+     * Ascending sorts appends A and descending sorts D
+     * E.g. sortBy=attribute1 D,attribute2 A
+     * ExtJS will 
+     * @private
+     * @return {String} The sortBy string
+     */
+    createSortByParameter: function() {
+
+        var me = this;
+        var sortStrings = [];
+        var direction;
+        var property;
+
+        me.getSorters().each(function(sorter) {
+            // direction will be either A from ASC or D from DESC
+            direction = sorter.getDirection(); //.charAt(0);
+            property = sorter.getProperty();
+            sortStrings.push(Ext.String.format('{0} {1}', property, direction));
+        });
+
+        return sortStrings.join(',');
     },
 
     /**
@@ -273,7 +294,10 @@ Ext.define('GeoExt.data.store.WfsFeatures', {
         // send the sortBy parameter only when remoteSort is true
         // as it is not supported by all WFS servers
         if (me.remoteSort === true) {
-            params.sortBy = me.sortBy;
+            var sortBy = me.createSortByParameter();
+            if (sortBy) {
+                params.sortBy = sortBy;
+            }
         }
 
         // apply paging parameters if necessary

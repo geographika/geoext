@@ -25,8 +25,8 @@
  *   * extent - `ol.Extent` The extent of the matching address
  *   * bounds - `ol.Coordinate` The point coordinate of the matching address
  *
- * **CAUTION: This class is only usable in applications using the classic
- * toolkit of ExtJS 6.**
+ * CAUTION: This class is only usable in applications using the classic toolkit
+ *          of ExtJS 6.
  *
  * @class GeoExt.form.field.GeocoderComboBox
  */
@@ -43,15 +43,23 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
     mixins: [
         'GeoExt.mixin.SymbolCheck'
     ],
+    config: {
+        /**
+         * The OpenLayers map to work on. If not provided the selection of an
+         * address has no effect.
+         *
+         * @cfg {ol.Map}
+         */
+        map: null,
 
-    /**
-     * The OpenLayers map to work on. If not provided the selection of an
-     * address would have no effect.
-     *
-     * @cfg {ol.Map}
-     */
-    map: null,
-
+        /**
+        * The style of the #locationLayer. Only has an effect if the layer is not
+        * set on creation.
+        *
+        * @cfg {ol.style.Style}
+        */
+        locationLayerStyle: null
+    },
     /**
      * Vector layer to visualize the selected address.
      * Will be created if not provided.
@@ -62,20 +70,12 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
     locationLayer: null,
 
     /**
-     * The style of the #locationLayer. Only has an effect if the layer is not
-     * passed in while creation.
-     *
-     * @cfg {ol.style.Style}
-     */
-    locationLayerStyle: null,
-
-    /**
      * The store used for this combo box. Default is a
      * store with  the url configured as #url
      * config.
      *
      * @cfg {Ext.data.JsonStore}
-     * @property {Ext.data.JsonStore}
+     * @propery {Ext.data.JsonStore}
      */
     store: null,
 
@@ -96,7 +96,7 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
     displayField: 'name',
 
     /**
-     * The field in the GeoCoder service repsonse to be used as mapping for the
+     * The field in the GeoCoder service response to be used as mapping for the
      * 'name' field in the #store.
      * Ignored when a store is passed in.
      *
@@ -107,8 +107,8 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
     /**
      * Field from selected record to use when the combo's
      * #getValue method is called. Default is "extent". This field is
-     * supposed to contain an ol.Extent.
-     * By setting this to 'coordinate' a field holding an ol.Coordinate is used.
+     * should contain an ol.Extent.
+     * By setting this to 'coordinate' a field containing an ol.Coordinate is used.
      *
      * @cfg {String}
      */
@@ -168,7 +168,7 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
     zoom: 10,
 
     /**
-     * Flag to steer if selected address feature is drawn on #map
+     * Flag to set if feature for the selected address is drawn on #map
      * (by #locationLayer).
      *
      * @cfg {Boolean}
@@ -184,9 +184,9 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
         if (!me.store) {
             me.store = Ext.create('Ext.data.JsonStore', {
                 fields: [
-                    {name: 'name', mapping: me.displayValueMapping},
-                    {name: 'extent', convert: me.convertToExtent},
-                    {name: 'coordinate', convert: me.convertToCoordinate}
+                    { name: 'name', mapping: me.displayValueMapping },
+                    { name: 'extent', convert: me.convertToExtent },
+                    { name: 'coordinate', convert: me.convertToCoordinate }
                 ],
                 proxy: {
                     type: 'ajax',
@@ -207,7 +207,7 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             });
 
             if (me.map) {
-                me.map.addLayer(me.locationLayer);
+                me.setMap(me.map);
             }
         }
 
@@ -218,6 +218,20 @@ Ext.define('GeoExt.form.field.GeocoderComboBox', {
             focus: me.onFocus,
             scope: me
         });
+    },
+
+    setMap: function(map) {
+        var me = this;
+        if (map) {
+            me.map = map;
+            if (me.locationLayer) {
+                me.map.addLayer(me.locationLayer);
+            }
+        }
+    },
+
+    setlocationLayerStyle: function(style) {
+        me.locationLayer.setStyle(style);
     },
 
     /**
