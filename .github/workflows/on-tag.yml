@@ -72,7 +72,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./${GITHUB_REF##*/}
+        publish_dir: ./${GITHUB_REF##*/} # ${GITHUB_REF##*/} strips everything up to the last /, leaving just main, v1.0.0, etc.
         destination_dir: ./${GITHUB_REF##*/}
 
 
