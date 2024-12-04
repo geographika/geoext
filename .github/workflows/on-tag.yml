@@ -60,12 +60,12 @@ jobs:
     - name: Cleanup and prepare pages
       run: |
         rm -rf ${GITHUB_REF##*/}
-        mkdir -p ${GITHUB_REF##*/}/docs
-        mkdir -p ${GITHUB_REF##*/}/docs-w-ext
-        cp -r examples ${GITHUB_REF##*/}/
-        cp -r resources ${GITHUB_REF##*/}/
-        cp -r src ${GITHUB_REF##*/}/
-        cp -r classic ${GITHUB_REF##*/}/
+        mkdir -p ${GITHUB_REF##*/#v}/docs
+        mkdir -p ${GITHUB_REF##*/#v}/docs-w-ext
+        cp -r examples ${GITHUB_REF##*/#v}/
+        cp -r resources ${GITHUB_REF##*/#v}/
+        cp -r src ${GITHUB_REF##*/#v}/
+        cp -r classic ${GITHUB_REF##*/#v}/
         npm run generate:docs:tag
         npm run generate:docs-w-ext:tag
 
