@@ -1,6 +1,22 @@
 Next Version
 ------------
 
+v7.0.0
+------
+
+BREAKING CHANGES:
+
+- Updates openlayers to v10.2.0.
+- The CI and tests are now tested against ExtJS 7.0.0 (updated from 6.2.0), however no breaking
+  changes were found when switching between the two versions.
+
+v6.0.0
+------
+
+BREAKING CHANGES:
+
+Updates openlayers to v8.1.0
+
 v5.0.0
 ------
 
